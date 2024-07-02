@@ -19,8 +19,8 @@
                 <label>Role</label>
                 <select v-model="user.role" name="role" id="role" class="form-control" required>
                     <option value="">Select a role</option>
-                    <option value="staff">Staff</option>
-                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="participation">Participation</option>
                 </select>
                 <br>
                 <input type="submit" value="Register" class="btn btn-success">
