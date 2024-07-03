@@ -64,9 +64,9 @@ export default {
                     this.$emit('updateUser', response.data.user);
                     localStorage.setItem('loggedInUser', JSON.stringify(response.data.user));
                     console.log('loggedInUser', JSON.stringify(response.data.user))
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1000);
+                    // setTimeout(() => {
+                    //     window.location.href = '/';
+                    // }, 1000);
                     
                 } catch (err) {
                     console.error('Error:', err);
