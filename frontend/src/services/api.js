@@ -31,3 +31,10 @@ export function createCourse(course) {
     return axios.post(`${API_URL}/registerCourse`, course);
 }
 
+// Post
+export const getPosts = () => api.get('/posts');
+export const updatePost = (id, post) => api.put(`/posts/${id}`, post);
+export const deletePost = (id) => api.delete(`/posts/${id}`);
+export function createPost(post) {
+    return axios.post(`${API_URL}/createPost`, post);
+}

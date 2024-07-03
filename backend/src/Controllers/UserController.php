@@ -81,13 +81,13 @@ class UserController {
 
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $sqlCheck = "SELECT * FROM users WHERE name = :name OR email = :email";
+            $sqlCheck = "SELECT * FROM users WHERE email = :email";
             $stmtCheck = $conn->prepare($sqlCheck);
-            $stmtCheck->execute(['name' => $name, 'email' => $email]);
+            $stmtCheck->execute(['email' => $email]);
             $existingUser = $stmtCheck->fetch();
     
             if ($existingUser) {
-                throw new Exception("User with the same name or email already exists.");
+                throw new Exception("The email has already been taken.");
             }
 
             $sqlInsert = "INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, :role)";
@@ -103,7 +103,7 @@ class UserController {
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
-            $error = ["error" => "Error creating user: " . $e->getMessage()];
+            $error = ["error" => "Error : " . $e->getMessage()];
             $payload = json_encode($error);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
@@ -187,7 +187,7 @@ class UserController {
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
-            $error = ["error" => "Error logging in: " . $e->getMessage()];
+            $error = ["error" => "" . $e->getMessage()];
             $payload = json_encode($error);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);

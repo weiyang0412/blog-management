@@ -6,16 +6,17 @@
                 <ul>
                     <li><router-link to="/">HOME</router-link></li>                   
                     <li v-if="isAdmin"><router-link to="/user-list">USER</router-link></li>
-                    <li v-if="isAdmin"><router-link to="/course-list">BLOG</router-link></li>
-                    <li><router-link to="/about">ABOUT</router-link></li>
-                    <li><router-link to="/contact">CONTACT US</router-link></li>
+                    <!-- <li v-if="isAdmin"><router-link to="/course-list">BLOG</router-link></li> -->
+                    <li v-if="isAdmin"><router-link to="/post">BLOG</router-link></li>
+                    <!-- <li><router-link to="/about">ABOUT</router-link></li> -->
+                    <!-- <li><router-link to="/contact">CONTACT US</router-link></li> -->
                 </ul>
             </div>
         </div>
 
         <div class="search">
-            <input class="srch" type="search" v-model="searchQuery" placeholder="Type To Find">
-            <button class="btn" @click="find">Find</button>
+            <!-- <input class="srch" type="search" v-model="searchQuery" placeholder="Type To Find">
+            <button class="btn" @click="find">Find</button> -->
             
             <div class="user">
             <ul>
@@ -24,7 +25,10 @@
                     <button @click="logout" class="btn btn-logout">Logout</button>
                 </li>
                 <li v-else class="nav-item">
-                    <router-link to="/login" class="nav-link">Login</router-link>
+                    <div class="btn2">
+                        <!-- <router-link to="/register" class="nav-link">REGISTER</router-link> -->
+                        <router-link to="/login" class="nav-link">LOGIN</router-link>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -221,5 +225,16 @@ html {
 
 .navbar .user ul li .btn-logout:hover {
     background-color: #c82333;
+}
+
+.navbar .user ul li .nav-link {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    margin-left: 10px;
+    color: #fff;
+}
+
+.navbar .user ul li .btn2 {
+    display: flex;
 }
 </style>

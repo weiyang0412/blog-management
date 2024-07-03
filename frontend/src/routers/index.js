@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/components/home.vue'
 import AboutPage from '@/components/about.vue'
-import CoursePage from '@/components/courseList.vue'
 import ContactUsPage from '@/components/contact.vue'
 import LoginPage from '@/components/userLogin.vue'
 import RegisterPage from '@/components/userRegister.vue'
 import UserListPage from '@/components/userList.vue'
+import PostListPage from '@/components/postList.vue'
 import { isLoggedIn } from '@/services/auth'
 
 const routes = [
@@ -18,12 +18,6 @@ const routes = [
         path: "/about",
         name: "About",
         component: AboutPage,
-    },
-    {
-        path: "/course-list",
-        name: "Course",
-        component: CoursePage,
-        meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
         path: "/contact",
@@ -44,6 +38,12 @@ const routes = [
         path: '/user-list',
         name: 'UserList',
         component: UserListPage,
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/post',
+        name: 'PostList',
+        component: PostListPage,
         meta: { requiresAuth: true, requiresAdmin: true }
     }
 

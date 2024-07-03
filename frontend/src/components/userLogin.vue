@@ -1,24 +1,30 @@
 <template>
-    <div class="card" align="left">
-        <div class="card-header">Login</div>
-        <div class="card-body">
-            <form @submit.prevent="loginUser" novalidate>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" v-model="user.email" name="email" id="email" class="form-control"
-                        :class="{ 'is-invalid': errors.email }" required />
-                    <div v-if="errors.email" class="invalid-feedback">{{ errors.email }}</div>
+    <div class="login-container">
+        <div class="card">
+            <div class="card-header">Log In!</div>
+            <div class="card-body">
+                <form @submit.prevent="loginUser" novalidate>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" v-model="user.email" name="email" id="email" class="form-control"
+                            :class="{ 'is-invalid': errors.email }" required />
+                        <div v-if="errors.email" class="invalid-feedback">{{ errors.email }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" v-model="user.password" name="password" id="password" class="form-control"
+                            :class="{ 'is-invalid': errors.password }" required />
+                        <div v-if="errors.password" class="invalid-feedback">{{ errors.password }}</div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Login</button>
+                        <router-link to="/register" class="btn btn-secondary">Register</router-link>
+                    </div>
+                </form>
+                <div v-if="message" class="message-container">
+                    <div class="alert alert-info small">{{ message }}</div>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" v-model="user.password" name="password" id="password" class="form-control"
-                        :class="{ 'is-invalid': errors.password }" required />
-                    <div v-if="errors.password" class="invalid-feedback">{{ errors.password }}</div>
-                </div>
-                <input type="submit" value="Login" class="btn btn-success" />
-                <button class="btn btn-secondary" @click="goToRegister">Register</button>
-            </form>
-            <div v-if="message" class="mt-3 alert alert-info">{{ message }}</div>
+            </div>
         </div>
     </div>
 </template>
@@ -58,14 +64,14 @@ export default {
                     this.$emit('updateUser', response.data.user);
                     localStorage.setItem('loggedInUser', JSON.stringify(response.data.user));
                     console.log('loggedInUser', JSON.stringify(response.data.user))
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1000);
+                    // setTimeout(() => {
+                    //     window.location.href = '/';
+                    // }, 1000);
                     
                 } catch (err) {
                     console.error('Error:', err);
                     if (err.response && err.response.data) {
-                        this.message = `Error: ${err.response.data.error}`;
+                        this.message = `${err.response.data.error}`;
                     } else {
                         this.message = 'An unknown error occurred.';
                     }
@@ -87,18 +93,50 @@ export default {
 </script>
 
 <style scoped>
-.is-invalid {
-    border-color: #dc3545;
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
 }
 
-.invalid-feedback {
-    display: block;
-    color: #dc3545;
+.card {
+    width: 100%;
+    max-width: 400px;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.form-label {
+    font-weight: bold;
 }
 
 .btn-secondary {
-    margin-left: 10px;
-    background-color: #dc3545;
-    border-color: #dc3545;
+    margin-top: 10px;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.message-container {
+    margin-top: 1em;
+}
+
+.small {
+    font-size: 0.875rem;
 }
 </style>

@@ -7,17 +7,17 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use PDOException;
 use Exception;
 
-class CourseController {
+class PostController {
     protected $db;
 
     public function __construct($db) {
         $this->db = $db;
     }
 
-    public function getCourses(Request $request, Response $response, $args) {
+    public function getPosts(Request $request, Response $response, $args) {
         try {
             $conn = $this->db->connect();
-            $sql = "SELECT * FROM courses";
+            $sql = "SELECT * FROM posts";
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -32,21 +32,21 @@ class CourseController {
         }
     }
 
-    public function getCourseById(Request $request, Response $response, $args) {
+    public function getPostById(Request $request, Response $response, $args) {
         try {
-            $course_code = $args['course_code'];
+            $id = $args['id'];
             $conn = $this->db->connect();
-            $sql = "SELECT * FROM courses WHERE course_code = :course_code";
+            $sql = "SELECT * FROM posts WHERE id = :id";
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':course_code', $course_code);
+            $stmt->bindValue(':id', $id);
             $stmt->execute();
-            $course = $stmt->fetch(\PDO::FETCH_ASSOC);
-            if ($course) {
-                $payload = json_encode($course);
+            $post = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($post) {
+                $payload = json_encode($post);
                 $response->getBody()->write($payload);
                 return $response->withHeader('Content-Type', 'application/json');
             } else {
-                $error = ["error" => "Course not found"];
+                $error = ["error" => "Post not found"];
                 $payload = json_encode($error);
                 $response->getBody()->write($payload);
                 return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
@@ -59,7 +59,7 @@ class CourseController {
         }
     }
 
-    public function createCourse(Request $request, Response $response, $args) {
+    public function createPost(Request $request, Response $response, $args) {
         try {
             $loggedInUserId = $request->getAttribute('id');
     
@@ -70,90 +70,96 @@ class CourseController {
     
             $data = json_decode($bodyContent, true);
             error_log("Parsed Body: " . print_r($data, true));
-            if (!isset($data['course_code']) || !isset($data['course_name']) || !isset($data['credit'])) {
-                throw new Exception("Course code, course name, and credit are required.");
+            if (!isset($data['title']) || !isset($data['excerpt']) || !isset($data['body']) || !isset($data['category'])) {
+                throw new Exception("Title, excerpt, body and category are required.");
             }
-            $course_code = $data['course_code'];
-            $course_name = $data['course_name'];
-            $credit = $data['credit'];
+            $title = $data['title'];
+            $excerpt = $data['excerpt'];
+            $body = $data['body'];
+            $category = $data['category'];
             $user_id = $data['user_id'];
     
-            $sqlCheck = "SELECT * FROM courses WHERE course_code = :course_code";
+            $sqlCheck = "SELECT * FROM posts WHERE title = :title";
             $stmtCheck = $conn->prepare($sqlCheck);
-            $stmtCheck->bindValue(':course_code', $course_code);
+            $stmtCheck->bindValue(':title', $title);
             $stmtCheck->execute();
-            $existingCourse = $stmtCheck->fetch();
+            $existingPost = $stmtCheck->fetch();
     
-            if ($existingCourse) {
-                throw new Exception("Course with the same course code already exists.");
+            if ($existingPost) {
+                throw new Exception("Post with the same title already exists.");
             }
     
-            $sqlInsert = "INSERT INTO courses (course_code, course_name, credit, user_id) 
-                        VALUES (:course_code, :course_name, :credit, :user_id)";
+            $sqlInsert = "INSERT INTO posts (title, excerpt, body, category, user_id) 
+                        VALUES (:title, :excerpt, :body, :category, :user_id)";
             $stmtInsert = $conn->prepare($sqlInsert);
-            $stmtInsert->bindValue(':course_code', $course_code);
-            $stmtInsert->bindValue(':course_name', $course_name);
-            $stmtInsert->bindValue(':credit', $credit);
+            $stmtInsert->bindValue(':title', $title);
+            $stmtInsert->bindValue(':excerpt', $excerpt);
+            $stmtInsert->bindValue(':body', $body);
+            $stmtInsert->bindValue(':category', $category);
             $stmtInsert->bindValue(':user_id', $user_id);
             $stmtInsert->execute();
     
-            $message = ["message" => "Course created successfully"];
+            $message = ["message" => "Post created successfully"];
             $payload = json_encode($message);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
-            $error = ["error" => "Error creating course: " . $e->getMessage()];
+            $error = ["error" => "Error creating post: " . $e->getMessage()];
             $payload = json_encode($error);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }
     }
     
-    public function updateCourse(Request $request, Response $response, $args) {
+    public function updatePost(Request $request, Response $response, $args) {
         try {
             $id = $args['id'];
             $conn = $this->db->connect();
             $data = json_decode($request->getBody()->getContents(), true);
-            if (!isset($data['course_name']) || !isset($data['credit'])) {
-                throw new Exception("Course name and credit are required.");
+            if (!isset($data['title']) || !isset($data['excerpt']) || !isset($data['body']) || !isset($data['category'])) {
+                throw new Exception("Title, excerpt, body and category are required.");
             }
-            $course_name = $data['course_name'];
-            $credit = $data['credit'];
+            $title = $data['title'];
+            $excerpt = $data['excerpt'];
+            $body = $data['body'];
+            $category = $data['category'];
 
-            $sql = "UPDATE courses SET course_name = :course_name, credit = :credit WHERE id = :id";
+            $sql = "UPDATE posts SET title = :title, excerpt = :excerpt, body = :body, category = :category WHERE id = :id";
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':course_name', $course_name);
-            $stmt->bindValue(':credit', $credit);
+            $stmt->bindValue(':title', $title);
+            $stmt->bindValue(':excerpt', $excerpt);
+            $stmt->bindValue(':body', $body);
+            $stmt->bindValue(':category', $category);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
 
-            $message = ["message" => "Course updated successfully"];
+            $message = ["message" => "Post updated successfully"];
             $payload = json_encode($message);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
-            $error = ["error" => "Error updating course: " . $e->getMessage()];
+            $error = ["error" => "Error updating post: " . $e->getMessage()];
             $payload = json_encode($error);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }
     }
 
-    public function deleteCourse(Request $request, Response $response, $args) {
+    public function deletePost(Request $request, Response $response, $args) {
         try {
             $id = $args['id'];
             $conn = $this->db->connect();
-            $sql = "DELETE FROM courses WHERE id = :id";
+            $sql = "DELETE FROM posts WHERE id = :id";
             $stmt = $conn->prepare($sql);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
 
-            $message = ["message" => "Course deleted successfully"];
+            $message = ["message" => "Post deleted successfully"];
             $payload = json_encode($message);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json');
         } catch (PDOException $e) {
-            $error = ["error" => "Error deleting course: " . $e->getMessage()];
+            $error = ["error" => "Error deleting post: " . $e->getMessage()];
             $payload = json_encode($error);
             $response->getBody()->write($payload);
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);

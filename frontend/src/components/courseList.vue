@@ -65,6 +65,10 @@ export default {
                     this.resetForm();
                 });
             }  else {
+                const loggedInUser = localStorage.getItem('loggedInUser');
+                const parsedUser = JSON.parse(loggedInUser);
+                this.form.user_id = parsedUser.id;
+                console.log('check user id', this.form.user_id)
                 createCourse(this.form).then(() => {
                     this.fetchCourses();
                     this.resetForm();
