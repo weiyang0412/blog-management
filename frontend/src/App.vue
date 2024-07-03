@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <header>
-      <Navbar :user="loggedInUser" @logout="handleLogout" />
+      <div class="header-content">
+        <img src="./assets/logo.png" alt="Logo" class="logo" />
+        <Navbar :user="loggedInUser" @logout="handleLogout" />
+      </div>
     </header>
     <router-view v-slot="{ Component, route }">
         <div :key="route.name">
@@ -61,5 +64,15 @@ header {
   width: 100vw;
   background-color: #222;
   padding: 15px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 50px;
+  margin-right: 20px;
 }
 </style>

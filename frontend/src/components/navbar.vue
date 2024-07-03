@@ -120,7 +120,7 @@ nav .menu-item a {
 }
 
 .dropdown-container {
-    margin-left: auto;
+    margin-left: 1440px;
     padding-right: 10px;
 }
 </style>
