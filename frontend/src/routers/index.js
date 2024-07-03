@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/components/home.vue'
-import AboutPage from '@/components/about.vue'
-import ContactUsPage from '@/components/contact.vue'
-import LoginPage from '@/components/userLogin.vue'
-import RegisterPage from '@/components/userRegister.vue'
-import UserListPage from '@/components/userList.vue'
-import PostListPage from '@/components/postList.vue'
+import HomePage from '@/components/menu/home.vue'
+import AboutPage from '@/components/menu/about.vue'
+import ContactUsPage from '@/components/menu/contact.vue'
+import LoginPage from '@/components/users/userLogin.vue'
+import RegisterPage from '@/components/users/userRegister.vue'
+import UserListPage from '@/components/users/userList.vue'
+import PostListPage from '@/components/posts/postList.vue'
 import { isLoggedIn } from '@/services/auth'
 
 const routes = [
