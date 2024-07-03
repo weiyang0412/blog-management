@@ -1,5 +1,7 @@
-# blog-management
-Web Technology Project
+# **Web Technology Project**
 
-FRONTEND FRAMEWORK - VUE
-BACKEND FRAMEWORK - SLIM
+## **BLOG MANAGEMENT**
+
+- FRONTEND FRAMEWORK - VUE
+
+- BACKEND FRAMEWORK - SLIM
