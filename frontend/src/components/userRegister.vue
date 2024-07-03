@@ -1,7 +1,7 @@
 <template>
     <div class="register-container">
         <div class="card">
-            <div class="card-header">Register Form</div>
+            <div class="card-header">Register</div>
             <div class="card-body">
                 <form @submit.prevent="registerUser" novalidate>
                     <div class="mb-3">

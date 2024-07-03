@@ -37,8 +37,8 @@ export default {
 .home {
     /* text-align: center; */
     padding: 50px;
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.5)50%, rgba(0, 0, 0, 0.5)50%),
-                    url(../assets/background.jpg);
+    /* background-image: linear-gradient(to top, rgba(0, 0, 0, 0.5)50%, rgba(0, 0, 0, 0.5)50%),
+                    url(../assets/background.jpg); */
     height: 100vh;
 }
 
@@ -48,7 +48,7 @@ export default {
     padding-left: 100px;
     margin-top: 15%;
     letter-spacing: 2px;
-    color: #fff;
+    color: #000000;
 }
 
 .home h1 span {
@@ -58,7 +58,7 @@ export default {
 .home .par {
     font-size: 18px;
     line-height: 1.6;
-    color: #fff;
+    color: #000000;
     margin-bottom: 30px;
     padding-left: 100px;
     font-family: Arial, Helvetica, sans-serif;
