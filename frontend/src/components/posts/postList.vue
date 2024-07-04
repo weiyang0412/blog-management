@@ -4,24 +4,25 @@
         <div class="container">
             <div class="links">
                 <a style="color: black">Links</a>
-                <router-link to="/post">All Post</router-link>
-                <router-link to="/create">New Post</router-link>
+                <router-link :to="{ path: '/post' }" :class="{ 'active-link': $route.path === '/post', 'inactive-link': $route.path !== '/post' }">All Posts</router-link>
+                <router-link :to="{ path: '/create' }" :class="{ 'active-link': $route.path === '/create', 'inactive-link': $route.path !== '/create' }">New Post</router-link>
             </div>
             <div class="card-container">
                 <div class="card">
                     <div class="posts">
                         <div v-for="post in posts" :key="post.id" class="post-card">
                             <div class="post-item">
-                                <span>{{ post.title }}</span>
-                                <button @click="editPost(post.id)" class="editButton">Edit</button>
-                                <button @click="deletePost(post.id)" class="deleteButton">Delete</button>
+                                <span class="post-title">{{ post.title }}</span>
+                                <div class="actions">
+                                    <button @click="editPost(post.id)" class="editButton">Edit</button>
+                                    <button @click="deletePost(post.id)" class="deleteButton">Delete</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -61,10 +62,12 @@ export default {
 }
 
 .title {
+    display: inline-block;
     border-bottom: 2px solid #ddd;
     padding-bottom: 10px;
     margin-bottom: 20px;
-    padding-left: 25%;
+    margin-left: 25%;
+    width: 50%;
 }
 
 .card-container {
@@ -98,7 +101,7 @@ export default {
 .links a {
     padding-left: 200px;
     text-decoration: none;
-    color: blue;
+    /* color: blue; */
 }
 
 .posts {
@@ -122,18 +125,26 @@ export default {
     padding-left: 10px;
 }
 
+.post-title {
+    flex-grow: 1;
+    margin-right: 390px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
 .actions button {
-    /* margin-left: 10px; */
     background-color: transparent;
     border: none;
     color: blue;
     cursor: pointer;
-    margin-left: 100px;
-    width: 100px;
+    width: 60px;
 }
 
 .actions button:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
 }
 
 .post-card:last-child {
@@ -145,8 +156,8 @@ export default {
     border: none;
     color: blue;
     cursor: pointer;
-    margin-left: 280px;
-    width: 100px;
+    /* margin-left: 280px; */
+    /* width: 100px; */
 }
 
 .post-item .deleteButton {
@@ -154,7 +165,14 @@ export default {
     border: none;
     color: grey;
     cursor: pointer;
-    margin-left: 50px;
-    /* width: 100px; */
+    /* margin-left: 50px; */
+}
+
+.active-link {
+    color: blue;
+}
+
+.inactive-link {
+    color: black;
 }
 </style>

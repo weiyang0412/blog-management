@@ -4,8 +4,8 @@
         <div class="container">
             <div class="links">
                 <a style="color: black">Links</a>
-                <router-link to="/post">All Post</router-link>
-                <router-link to="/create">New Post</router-link>
+                <router-link :to="{ path: '/post' }" :class="{ 'active-link': $route.path === '/post', 'inactive-link': $route.path !== '/post' }">All Posts</router-link>
+                <router-link :to="{ path: '/create' }" :class="{ 'active-link': $route.path === '/create', 'inactive-link': $route.path !== '/create' }">New Post</router-link>
             </div>
             <div class="card-container">
                 <div class="card">
@@ -84,16 +84,18 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .post-list-container {
     padding: 20px;
 }
 
 .title {
+    display: inline-block;
     border-bottom: 2px solid #ddd;
     padding-bottom: 10px;
     margin-bottom: 20px;
-    padding-left: 25%;
+    margin-left: 25%;
+    width: 50%;
 }
 
 .card-container {
@@ -127,7 +129,7 @@ export default {
 .links a {
     padding-left: 200px;
     text-decoration: none;
-    color: blue;
+    /* color: blue; */
 }
 
 .posts form {
@@ -187,7 +189,7 @@ export default {
 }
 
 .form-control {
-    width: 500px;
+    width: 511px;
     padding: 8px;
     font-size: 1rem;
     border: 1px solid #ccc;
@@ -213,5 +215,13 @@ select.form-control {
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.active-link {
+    color: blue;
+}
+
+.inactive-link {
+    color: black;
 }
 </style>

@@ -1,59 +1,38 @@
 <template>
-    <div class="container">
-        <h1 class="my-4">User List</h1>
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="user in users" :key="user.id">
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm me-2" @click="editUser(user.id)">Edit</button>
-                        <button class="btn btn-danger btn-sm" @click="deleteUser(user.id)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <form @submit.prevent="saveUser" class="mt-4">
-            <div class="mb-3">
-                <input v-model="form.name" class="form-control" placeholder="Name" required />
+    <div class="user-list-container">
+        <h1 class="title">Manage Users</h1>
+        <div class="container">
+            <div class="links">
+                <a style="color: black">Links</a>
+                <router-link to="">All Users</router-link>
+                <router-link to="">New User</router-link>
             </div>
-            <div class="mb-3">
-                <input v-model="form.email" class="form-control" placeholder="Email" required />
+            <div class="card-container">
+                <div class="card">
+                    <div class="users">
+                        <div v-for="user in users" :key="user.id" class="user-card">
+                            <div class="user-item">
+                                <span class="user-name">{{ user.name }}</span>
+                                <div class="actions">
+                                    <button @click="editUser(user.id)" class="editButton">Edit</button>
+                                    <button @click="deleteUser(user.id)" class="deleteButton">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <input v-model="form.role" class="form-control" placeholder="Role" required />
-            </div>
-            <div class="mb-3">
-                <input v-model="form.password" type="password" class="form-control" placeholder="Password" required />
-            </div>
-            <button type="submit" class="btn btn-success">Save</button>
-        </form>
+        </div>
     </div>
 </template>
 
 <script>
-import { getUsers, createUser, updateUser, deleteUser } from '@/services/api';
+import { getUsers, deleteUser } from '@/services/api';
 
 export default {
     data() {
         return {
-            users: [],
-            form: {
-                id: null,
-                name: '',
-                email: '',
-                password: '',
-                role: ''
-            }
+            users: []
         };
     },
     methods: {
@@ -62,46 +41,13 @@ export default {
                 this.users = response.data;
             });
         },
-        async saveUser() {
-            if (this.form.id) {
-                updateUser(this.form.id, this.form).then(() => {
-                    this.fetchUsers();
-                    this.resetForm();
-                });
-            } else {
-                try {
-                    console.log('Sending user data:', this.form);
-                    const response = await createUser(this.form);
-                    console.log('Response data:', response.data);
-                    this.message = 'User registered successfully!';
-                    this.resetForm();
-                    window.location.reload();
-                } catch (err) {
-                    if (err.response && err.response.data) {
-                        this.message = `Error: ${err.response.data.error}`;
-                    } else {
-                        this.message = 'An unknown error occurred.';
-                    }
-                }
-            }
-        },
         editUser(id) {
-            const user = this.users.find(user => user.id === id);
-            this.form = { ...user };
+            this.$router.push({ name: 'EditUser', params: { id } });
         },
         deleteUser(id) {
             deleteUser(id).then(() => {
                 this.fetchUsers();
             });
-        },
-        resetForm() {
-            this.form = {
-                id: null,
-                name: '',
-                email: '',
-                password: '',
-                role: ''
-            };
         }
     },
     created() {
@@ -111,18 +57,111 @@ export default {
 </script>
 
 <style scoped>
-table {
-    width: 100%;
-    border-collapse: collapse;
+.user-list-container {
+    padding: 20px;
 }
 
-th,
-td {
-    padding: 8px;
+.title {
+    display: inline-block;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-left: 25%;
+    width: 50%;
+}
+
+.card-container {
+    margin: 10px auto;
+    padding: 10px;
+    background: #fff;
     border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-th {
-    background-color: #f4f4f4;
+.card {
+    margin: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    display: flex;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.links a {
+    padding-left: 200px;
+    text-decoration: none;
+    color: blue;
+}
+
+.users {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-card {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    margin: 5px;
+    padding-left: 20px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.user-name {
+    flex-grow: 1;
+    margin-right: 390px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.actions button {
+    background-color: transparent;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    width: 60px;
+}
+
+.actions .editButton {
+    background-color: transparent;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    /* margin-left: 280px; */
+    /* width: 100px; */
+}
+
+.actions .deleteButton {
+    background-color: transparent;
+    border: none;
+    color: grey;
+    cursor: pointer;
+    /* margin-left: 50px; */
+}
+
+.actions button:hover {
+    /* text-decoration: underline; */
+}
+
+.user-card:last-child {
+    border-bottom: none;
 }
 </style>
