@@ -4,24 +4,24 @@
         <div class="container">
             <div class="links">
                 <a style="color: black">Links</a>
-                <router-link to="/all-posts">All Post</router-link>
-                <router-link to="/post/create">New Post</router-link>
+                <router-link to="/post">All Post</router-link>
+                <router-link to="/create">New Post</router-link>
             </div>
-            <div class="card">
-                <div class="posts">
-                    <div v-for="post in posts" :key="post.id" class="post-card">
-                        <div class="post-item">
-                            <span>{{ post.title }}</span>
-                            <div class="actions">
-                                <button @click="editPost(post.id)">Edit</button>
-                                <button @click="deletePost(post.id)">Delete</button>
+            <div class="card-container">
+                <div class="card">
+                    <div class="posts">
+                        <div v-for="post in posts" :key="post.id" class="post-card">
+                            <div class="post-item">
+                                <span>{{ post.title }}</span>
+                                <button @click="editPost(post.id)" class="editButton">Edit</button>
+                                <button @click="deletePost(post.id)" class="deleteButton">Delete</button>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
-        
+
     </div>
 </template>
 
@@ -56,7 +56,7 @@ export default {
 </script>
 
 <style scoped>
-.post-list-container {   
+.post-list-container {
     padding: 20px;
 }
 
@@ -67,13 +67,22 @@ export default {
     padding-left: 25%;
 }
 
+.card-container {
+    margin: 10px auto;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .card {
     margin: 10px;
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    
+
 }
 
 .container {
@@ -93,8 +102,8 @@ export default {
 }
 
 .posts {
-    /* display: flex; */
-    /* flex-direction: column; */
+    display: flex;
+    flex-direction: column;
 }
 
 .post-card {
@@ -102,13 +111,15 @@ export default {
     border-bottom: 1px solid #ddd;
     padding: 10px;
     margin: 5px;
+    padding-left: 20px;
+    /* width: 10px; */
 }
 
 .post-item {
     display: flex;
     /* justify-content: space-between; */
     /* align-items: center; */
-    margin-right: 100px;
+    padding-left: 10px;
 }
 
 .actions button {
@@ -118,6 +129,7 @@ export default {
     color: blue;
     cursor: pointer;
     margin-left: 100px;
+    width: 100px;
 }
 
 .actions button:hover {
@@ -126,5 +138,23 @@ export default {
 
 .post-card:last-child {
     border-bottom: none;
+}
+
+.post-item .editButton {
+    background-color: transparent;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    margin-left: 280px;
+    width: 100px;
+}
+
+.post-item .deleteButton {
+    background-color: transparent;
+    border: none;
+    color: grey;
+    cursor: pointer;
+    margin-left: 50px;
+    /* width: 100px; */
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
     <div class="post-list-container">
-        <h1 class="title">{{`Edit Post: ${originalTitle}`}}</h1>
+        <h1 class="title">Create New Post</h1>
         <div class="container">
             <div class="links">
                 <a style="color: black">Links</a>
                 <router-link to="/post">All Post</router-link>
-                <router-link to="/create">New Post</router-link>
+                <router-link to="/post/create">New Post</router-link>
             </div>
             <div class="card-container">
                 <div class="card">
@@ -31,7 +31,7 @@
                                     <option value="lifestyle">Lifestyle</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-success">Update</button>
+                            <button type="submit" class="btn btn-success">Create</button>
                         </form>
                     </div>
                 </div>

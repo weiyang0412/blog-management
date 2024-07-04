@@ -8,7 +8,7 @@ import RegisterPage from '@/components/users/userRegister.vue'
 import UserListPage from '@/components/users/userList.vue'
 import PostListPage from '@/components/posts/postList.vue'
 import EditPostPage from '@/components/posts/editPost.vue'
-import CreatePostPage from '@/components/posts/editPost.vue'
+import CreatePostPage from '@/components/posts/createPost.vue'
 
 
 const routes = [
@@ -55,7 +55,7 @@ const routes = [
         component: EditPostPage,
     },
     {
-        path: '/post/create',
+        path: '/create',
         name: 'CreatePost',
         component: CreatePostPage,
     }
