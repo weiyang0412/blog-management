@@ -33,6 +33,7 @@ export function createCourse(course) {
 
 // Post
 export const getPosts = () => api.get('/posts');
+export const getPostById = (id) => api.get(`/posts/${id}`);
 export const updatePost = (id, post) => api.put(`/posts/${id}`, post);
 export const deletePost = (id) => api.delete(`/posts/${id}`);
 export function createPost(post) {

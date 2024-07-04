@@ -41,6 +41,7 @@ $app->put('/courses/{id}', [$courseController, 'updateCourse']);
 $app->delete('/courses/{id}', [$courseController, 'deleteCourse']);
 
 $app->get('/posts', [$postController, 'getPosts']);
+$app->get('/posts/{id}', [$postController, 'getPostById']);
 $app->post('/createPost', [$postController, 'createPost']);
 $app->put('/posts/{id}', [$postController, 'updatePost']);
 $app->delete('/posts/{id}', [$postController, 'deletePost']);

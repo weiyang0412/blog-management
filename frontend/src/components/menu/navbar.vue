@@ -1,11 +1,14 @@
 <template>
     <nav>
-        <div class="menu-item"><a><router-link to="/">Home</router-link></a></div>
-        <div class="menu-item"><a v-if="isAdmin"><router-link to="/user-list">User</router-link></a></div>
-        <div class="menu-item"><a v-if="isAdmin"><router-link to="/post">BLOG</router-link></a></div>
+        <div class="header-content">
+            <img src="../../assets/logo.png" alt="Logo" class="logo" />
+            <div class="menu-item"><a><router-link to="/">Home</router-link></a></div>
+            <div v-if="isAdmin" class="menu-item"><a><router-link to="/user-list">User</router-link></a></div>
+            <div v-if="isAdmin" class="menu-item"><a><router-link to="/post">BLOG</router-link></a></div>
+        </div>
         <div class="dropdown-container">
             <Dropdown v-if="loggedInUser" :title="userName" :items="services" @item-click="handleDropdownClick" />
-            <div v-else class="menu-item">
+            <div v-else class="login-item">
                 <a><router-link to="/login">Login</router-link></a>
             </div>
         </div>
@@ -78,12 +81,12 @@ export default {
             this.$router.push('/login');
         },
         handleDropdownClick(item) {
-            console.log('Dropdown item clicked:', item); // 输出点击的item信息
+            console.log('Dropdown item clicked:', item);
             if (item.action === 'logout') {
-                console.log('Executing logout action'); // 确认是否执行了logout
+                console.log('Executing logout action');
                 this.logout();
             } else {
-                console.log('Clicked on:', item.title); // 输出其他项的点击信息
+                console.log('Clicked on:', item.title);
             }
         }
     }
@@ -91,6 +94,11 @@ export default {
 </script>
 
 <style>
+.header-content {
+    display: flex;
+    align-items: center;
+}
+
 nav {
     display: flex;
     align-items: center;
@@ -120,7 +128,29 @@ nav .menu-item a {
 }
 
 .dropdown-container {
-    margin-left: 1440px;
+    margin-left: auto;
     padding-right: 10px;
+}
+
+nav .login-item {
+    color: #FFF;
+    padding: 10px 20px;
+    position: relative;
+    text-align: center;
+    border-bottom: 3px solid transparent;
+    display: flex;
+    transition: 0.4s;
+}
+
+nav .login-item a {
+    color: inherit;
+    text-decoration: none;
+}
+
+nav .login-item.active,
+nav .login-item:hover {
+    background-color: #444;
+    border-bottom-color: #FF5858;
+
 }
 </style>

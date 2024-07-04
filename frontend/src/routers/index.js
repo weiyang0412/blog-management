@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isLoggedIn } from '@/services/auth'
 import HomePage from '@/components/menu/home.vue'
 import AboutPage from '@/components/menu/about.vue'
 import ContactUsPage from '@/components/menu/contact.vue'
@@ -6,7 +7,9 @@ import LoginPage from '@/components/users/userLogin.vue'
 import RegisterPage from '@/components/users/userRegister.vue'
 import UserListPage from '@/components/users/userList.vue'
 import PostListPage from '@/components/posts/postList.vue'
-import { isLoggedIn } from '@/services/auth'
+import EditPostPage from '@/components/posts/editPost.vue'
+import CreatePostPage from '@/components/posts/editPost.vue'
+
 
 const routes = [
     {
@@ -45,6 +48,16 @@ const routes = [
         name: 'PostList',
         component: PostListPage,
         meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/post/:id',
+        name: 'EditPost',
+        component: EditPostPage,
+    },
+    {
+        path: '/post/create',
+        name: 'CreatePost',
+        component: CreatePostPage,
     }
 
 

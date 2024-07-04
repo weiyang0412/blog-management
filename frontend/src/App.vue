@@ -1,10 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <div class="header-content">
-        <img src="./assets/logo.png" alt="Logo" class="logo" />
         <Navbar :user="loggedInUser" @logout="handleLogout" />
-      </div>
     </header>
     <router-view v-slot="{ Component, route }">
         <div :key="route.name">
