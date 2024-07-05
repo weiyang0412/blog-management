@@ -87,6 +87,7 @@ export default {
 <style scoped>
 .post-list-container {
     padding: 20px;
+    
 }
 
 .title {
