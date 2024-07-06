@@ -1,16 +1,20 @@
 <template>
     <div class="post-list-container">
-        <h1 class="title">{{`Edit Post: ${originalTitle}`}}</h1>
+        <h1 class="title">{{ `Edit Post: ${originalTitle}` }}</h1>
         <div class="container">
             <div class="links">
                 <a style="color: black">Links</a>
-                <router-link :to="{ path: '/post' }" :class="{ 'active-link': $route.path === '/post', 'inactive-link': $route.path !== '/post' }">All Posts</router-link>
-                <router-link :to="{ path: '/create' }" :class="{ 'active-link': $route.path === '/create', 'inactive-link': $route.path !== '/create' }">New Post</router-link>
+                <router-link :to="{ path: '/post' }"
+                    :class="{ 'active-link': $route.path === '/post', 'inactive-link': $route.path !== '/post' }">All
+                    Posts</router-link>
+                <router-link :to="{ path: '/create' }"
+                    :class="{ 'active-link': $route.path === '/create', 'inactive-link': $route.path !== '/create' }">New
+                    Post</router-link>
             </div>
             <div class="card-container">
                 <div class="card">
                     <div class="posts">
-                        <form @submit.prevent="savePost">
+                        <form @submit.prevent="savePost" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label>Title</label>
                                 <input v-model="form.title" class="form-control" placeholder="Title" required />
@@ -25,11 +29,19 @@
                             </div>
                             <div class="mb-3">
                                 <label>Category</label>
-                                <select v-model="form.category" name="category" id="category" class="form-control" required>
+                                <select v-model="form.category" name="category" id="category" class="form-control"
+                                    required>
                                     <option value="">Select a category</option>
                                     <option value="food">Food</option>
                                     <option value="lifestyle">Lifestyle</option>
                                 </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>Thumbnail</label>
+                                <input type="file" @change="onFileChange" class="form-control" />
+                                <div v-if="thumbnailUrl">
+                                    <img :src="thumbnailUrl" alt="Thumbnail" class="thumbnail" />
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-success">Update</button>
                         </form>
@@ -37,7 +49,7 @@
                 </div>
             </div>
         </div>
-    </div>       
+    </div>
 </template>
 
 <script>
@@ -52,8 +64,10 @@ export default {
                 excerpt: '',
                 body: '',
                 category: '',
+                thumbnail: null
             },
             originalTitle: '',
+            thumbnailUrl: ''
         };
     },
     methods: {
@@ -63,16 +77,36 @@ export default {
                 getPostById(postId).then(response => {
                     this.form = response.data;
                     this.originalTitle = response.data.title;
+                    this.thumbnailUrl = this.getThumbnailUrl(this.form.thumbnail);
                 });
             }
         },
+        getThumbnailUrl(filename) {
+            return filename ? require(`@/assets/thumbnails/${filename}`) : '';
+        },
+        onFileChange(event) {
+            this.form.thumbnail = event.target.files[0];
+        },
         savePost() {
+            const user = JSON.parse(localStorage.getItem('loggedInUser'));
+            const formData = new FormData();
+            formData.append('title', this.form.title);
+            formData.append('excerpt', this.form.excerpt);
+            formData.append('body', this.form.body);
+            formData.append('category', this.form.category);
+            formData.append('user_id', user.id);
+            if (this.form.thumbnail) {
+                formData.append('thumbnail', this.form.thumbnail);
+            }
+            console.log('FormData content:', formData);
+
+            
             if (this.form.id) {
-                updatePost(this.form.id, this.form).then(() => {
+                updatePost(this.form.id, formData).then(() => {
                     this.$router.go(-1);
                 });
             } else {
-                createPost(this.form).then(() => {
+                createPost(formData).then(() => {
                     this.$router.go(-1);
                 });
             }
@@ -87,7 +121,6 @@ export default {
 <style scoped>
 .post-list-container {
     padding: 20px;
-    
 }
 
 .title {
@@ -114,7 +147,6 @@ export default {
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
 }
 
 .container {
@@ -224,5 +256,12 @@ select.form-control {
 
 .inactive-link {
     color: black;
+}
+
+.thumbnail {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    
 }
 </style>

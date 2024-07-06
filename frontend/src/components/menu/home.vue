@@ -1,22 +1,20 @@
 <template>
     <div class="home">
-        <!-- <header class="header">
-            <h1>Latest <span>Laravel From Scratch</span> News</h1>
-        </header> -->
         <div class="buttons">
             <button class="category-button">Categories</button>
             <button class="find-button">Find something</button>
         </div>
-        <div class="latest-article">
-            <img :src="articles[0].image" alt="Latest Article Image" class="latest-article-image" />
+        <div class="latest-article" v-if="articles.length">
+            <img :src="getThumbnailUrl(articles[0].thumbnail)" alt="Latest Article Image"
+                class="latest-article-image" />
             <div class="latest-article-content">
                 <span class="label">PROVIDENT</span>
                 <h2 class="article-title">{{ articles[0].title }}</h2>
-                <p class="article-date">{{ articles[0].date }}</p>
-                <p class="latest-article-description">{{ articles[0].description }}</p>
+                <p class="article-date">{{ formatDate(articles[0].created_at) }}</p>
+                <p class="latest-article-description">{{ articles[0].excerpt }}</p>
                 <div class="latest-article-footer">
                     <div class="author">
-                        <img :src="articles[0].authorImage" alt="Author" class="author-image" />
+                        <img :src="getRandomAuthorImage()" alt="Author" class="author-image" />
                         <span>{{ articles[0].author }}</span>
                     </div>
                     <button class="read-more">Read More</button>
@@ -25,15 +23,15 @@
         </div>
         <div class="articles">
             <div class="article" v-for="(article) in articles.slice(1)" :key="article.id">
-                <img :src="article.image" alt="Article Image" class="article-image" />
+                <img :src="getThumbnailUrl(article.thumbnail)" alt="Article Image" class="article-image" />
                 <div class="article-content">
                     <span class="label">QUOD</span>
                     <h2 class="article-title">{{ article.title }}</h2>
-                    <p class="article-date">{{ article.date }}</p>
-                    <p class="article-description">{{ article.description }}</p>
+                    <p class="article-date">{{ formatDate(article.created_at) }}</p>
+                    <p class="article-description">{{ article.excerpt }}</p>
                     <div class="article-footer">
                         <div class="author">
-                            <img :src="article.authorImage" alt="Author" class="author-image" />
+                            <img :src="getRandomAuthorImage()" alt="Author" class="author-image" />
                             <span>{{ article.author }}</span>
                         </div>
                         <button class="read-more">Read More</button>
@@ -45,109 +43,37 @@
 </template>
 
 <script>
+import { getPosts } from '@/services/api'; // 假设你有一个 API 模块用于获取文章数据
+
 export default {
     name: 'HomePage',
     data() {
         return {
-            articles: [
-                {
-                    id: 1,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Web Techno',
-                    date: 'Published 3 weeks ago',
-                    description: 'Web Techno',
-                    author: 'weiyang',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 2,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 2',
-                    date: 'Published 2 weeks ago',
-                    description: 'Description of post 2',
-                    author: 'author2',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-                {
-                    id: 3,
-                    image: require('@/assets/background.jpg'),
-                    title: 'Post 3',
-                    date: 'Published 1 week ago',
-                    description: 'Description of post 3',
-                    author: 'author3',
-                    authorImage: this.getRandomAuthorImage()
-                },
-            ]
+            articles: []
         };
     },
     methods: {
         getRandomAuthorImage() {
             const randomId = Math.floor(Math.random() * 1000);
             return `https://picsum.photos/seed/${randomId}/50/50`;
+        },
+        getThumbnailUrl(filename) {
+            return require(`@/assets/thumbnails/${filename}`);
+        },
+        formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        },
+        fetchArticles() {
+            getPosts().then(response => {
+                this.articles = response.data;
+            }).catch(error => {
+                console.error(error);
+            });
         }
+    },
+    created() {
+        this.fetchArticles();
     }
 };
 </script>

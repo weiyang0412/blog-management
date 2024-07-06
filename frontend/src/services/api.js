@@ -34,8 +34,19 @@ export function createCourse(course) {
 // Post
 export const getPosts = () => api.get('/posts');
 export const getPostById = (id) => api.get(`/posts/${id}`);
-export const updatePost = (id, post) => api.put(`/posts/${id}`, post);
+// export const updatePost = (id, post) => api.put(`/posts/${id}`, post);
+export const updatePost = (id, post) => {
+    return axios.put(`${API_URL}/posts/${id}`, post);
+}
+// export function updatePost(id, formData, config) {
+//     return axios.put(`${API_URL}/posts/${id}`, formData, config);
+// }
 export const deletePost = (id) => api.delete(`/posts/${id}`);
 export function createPost(post) {
-    return axios.post(`${API_URL}/createPost`, post);
+    return axios.post(`${API_URL}/createPost`, post, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 }
+

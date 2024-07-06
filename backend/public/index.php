@@ -22,6 +22,7 @@ $db = new db($config['settings']['db']);
 
 $app = AppFactory::create();
 
+$app->addRoutingMiddleware();
 $app->addBodyParsingMiddleware();
 
 $userController = new UserController($db);

@@ -10,7 +10,7 @@
             <div class="card-container">
                 <div class="card">
                     <div class="posts">
-                        <form @submit.prevent="savePost">
+                        <form @submit.prevent="savePost" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label>Title</label>
                                 <input v-model="form.title" class="form-control" placeholder="Title" required />
@@ -31,6 +31,10 @@
                                     <option value="lifestyle">Lifestyle</option>
                                 </select>
                             </div>
+                            <div class="mb-3">
+                                <label>Thumbnail</label>
+                                <input type="file" @change="handleFileUpload" class="form-control" required />
+                            </div>
                             <button type="submit" class="btn btn-success">Create</button>
                         </form>
                     </div>
@@ -41,45 +45,41 @@
 </template>
 
 <script>
-import { getPostById, updatePost, createPost } from '@/services/api';
+import { createPost } from '@/services/api';
 
 export default {
     data() {
         return {
             form: {
-                id: null,
                 title: '',
                 excerpt: '',
                 body: '',
                 category: '',
+                thumbnail: null,
             },
-            originalTitle: '',
         };
     },
     methods: {
-        fetchPost() {
-            const postId = this.$route.params.id;
-            if (postId) {
-                getPostById(postId).then(response => {
-                    this.form = response.data;
-                    this.originalTitle = response.data.title;
-                });
-            }
+        handleFileUpload(event) {
+            this.form.thumbnail = event.target.files[0];
         },
         savePost() {
-            if (this.form.id) {
-                updatePost(this.form.id, this.form).then(() => {
-                    this.$router.go(-1);
-                });
-            } else {
-                createPost(this.form).then(() => {
-                    this.$router.go(-1);
-                });
-            }
+            const user = JSON.parse(localStorage.getItem('loggedInUser'));
+            console.log('user', user.id);
+            const formData = new FormData();
+            formData.append('title', this.form.title);
+            formData.append('excerpt', this.form.excerpt);
+            formData.append('body', this.form.body);
+            formData.append('category', this.form.category);
+            formData.append('thumbnail', this.form.thumbnail);
+            formData.append('user_id', user.id);
+
+            createPost(formData).then(() => {
+                this.$router.go(-1);
+            }).catch(error => {
+                console.error(error);
+            });
         }
-    },
-    created() {
-        this.fetchPost();
     }
 }
 </script>
