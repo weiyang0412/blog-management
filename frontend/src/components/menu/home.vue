@@ -13,7 +13,7 @@
             <div class="latest-article-content">
                 <span class="label">{{ filteredArticles[0].category }}</span>
                 <h2 class="article-title">{{ filteredArticles[0].title }}</h2>
-                <p class="article-date">{{ formatDate(filteredArticles[0].created_at) }}</p>
+                <p class="article-date">Published {{ timeSince(filteredArticles[0].created_at) }}</p>
                 <p class="latest-article-description">{{ filteredArticles[0].excerpt }}</p>
                 <div class="latest-article-footer">
                     <div class="author">
@@ -30,7 +30,7 @@
                 <div class="article-content">
                     <span class="label">{{ article.category }}</span>
                     <h2 class="article-title">{{ article.title }}</h2>
-                    <p class="article-date">{{ formatDate(article.created_at) }}</p>
+                    <p class="article-date">Published {{ timeSince(article.created_at) }}</p>
                     <p class="article-description">{{ article.excerpt }}</p>
                     <div class="article-footer">
                         <div class="author">
@@ -95,7 +95,6 @@ export default {
         fetchArticles() {
             getPosts().then(response => {
                 console.log('Fetched articles:', response.data);
-                // 排序文章，使最新的在最上面
                 this.articles = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             }).catch(error => {
                 console.error(error);
@@ -103,11 +102,43 @@ export default {
         },
         updateSearchQuery(event) {
             this.searchQuery = event.target.value;
-            this.searchPerformed = false; // 重置搜索标志
+            this.searchPerformed = false;
         },
         performSearch() {
             this.searchPerformed = true;
             console.log('Search performed with query:', this.searchQuery);
+        },
+        timeSince(date) {
+            const now = new Date();
+            const past = new Date(date);
+            const seconds = Math.floor((now - past) / 1000);
+
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) {
+                return interval + (interval === 1 ? " year" : " years") + " ago";
+            }
+
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) {
+                return interval + (interval === 1 ? " month" : " months") + " ago";
+            }
+
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) {
+                return interval + (interval === 1 ? " day" : " days") + " ago";
+            }
+
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) {
+                return interval + (interval === 1 ? " hour" : " hours") + " ago";
+            }
+
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) {
+                return interval + (interval === 1 ? " minute" : " minutes") + " ago";
+            }
+
+            return Math.floor(seconds) + (seconds === 1 ? " second" : " seconds") + " ago";
         }
     },
     created() {
@@ -117,6 +148,10 @@ export default {
 </script>
 
 <style>
+:root {
+    --tw-text-opacity: 1; /* 默认透明度为1（不透明） */
+}
+
 .home {
     text-align: center;
     padding: 20px;
@@ -190,11 +225,13 @@ select {
 }
 
 .label {
-    background: #e0e0e0;
+    background: #fff;
     padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    /* font-weight: bold; */
+    color: rgba(147, 197, 253, var(--tw-text-opacity));
+    border: 1px solid rgba(147, 197, 253, var(--tw-text-opacity));
 }
 
 .article-title {
@@ -202,7 +239,11 @@ select {
     margin: 10px 0;
 }
 
-.article-date,
+.article-date {
+    margin: 5px 0;
+    color: rgb(196, 190, 190);
+}
+
 .article-description {
     margin: 5px 0;
 }

@@ -54,7 +54,7 @@ export default {
 }
 
 body {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: Open Sans, sans-serif;
 }
 
 header {
