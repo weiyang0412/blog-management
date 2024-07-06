@@ -74,6 +74,7 @@ export default {
             formData.append('thumbnail', this.form.thumbnail);
             formData.append('user_id', user.id);
 
+            console.log('formData', formData);
             createPost(formData).then(() => {
                 this.$router.go(-1);
             }).catch(error => {

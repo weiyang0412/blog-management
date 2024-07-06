@@ -8,6 +8,9 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Middleware\BodyParsingMiddleware;
+use Slim\Exception\HttpMethodNotAllowedException;
+use Slim\Exception\HttpNotFoundException;
+use Slim\Middleware\ErrorMiddleware;
 use App\Controllers\UserController;
 use App\Controllers\CourseController;
 use App\Controllers\PostController;
@@ -22,8 +25,21 @@ $db = new db($config['settings']['db']);
 
 $app = AppFactory::create();
 
+// Add Routing Middleware
 $app->addRoutingMiddleware();
 $app->addBodyParsingMiddleware();
+
+// Add CORS Middleware
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+});
+
+// Add Error Middleware
+$app->addErrorMiddleware(true, true, true);
 
 $userController = new UserController($db);
 $courseController = new CourseController($db);
@@ -44,7 +60,7 @@ $app->delete('/courses/{id}', [$courseController, 'deleteCourse']);
 $app->get('/posts', [$postController, 'getPosts']);
 $app->get('/posts/{id}', [$postController, 'getPostById']);
 $app->post('/createPost', [$postController, 'createPost']);
-$app->put('/posts/{id}', [$postController, 'updatePost']);
+$app->post('/posts/{id}', [$postController, 'updatePost']);
 $app->delete('/posts/{id}', [$postController, 'deletePost']);
 
 $app->run();

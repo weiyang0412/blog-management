@@ -5,7 +5,7 @@
             <div class="menu-item"><a><router-link to="/">Home</router-link></a></div>
             <div v-if="isAdmin" class="menu-item"><a><router-link to="/user-list">User</router-link></a></div>
             <div v-if="isAdmin" class="menu-item"><a><router-link to="/post">Blog</router-link></a></div>
-            <div class="menu-item"><a><router-link to="/about">About</router-link></a></div>
+            <!-- <div class="menu-item"><a><router-link to="/about">About</router-link></a></div> -->
         </div>
         <div class="dropdown-container">
             <Dropdown v-if="loggedInUser" :title="userName" :items="services" @item-click="handleDropdownClick" />

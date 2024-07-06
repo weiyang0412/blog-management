@@ -1,31 +1,34 @@
 <template>
     <div class="home">
         <div class="buttons">
-            <button class="category-button">Categories</button>
-            <button class="find-button">Find something</button>
+            <select v-model="selectedCategory">
+                <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+            </select>
+            <input v-model="searchQuery" placeholder="Find something" class="search-input" @keyup.enter="performSearch" @input="updateSearchQuery" />
         </div>
-        <div class="latest-article" v-if="articles.length">
-            <img :src="getThumbnailUrl(articles[0].thumbnail)" alt="Latest Article Image"
+        <!-- <p>Selected Category: {{ selectedCategory }}</p> -->
+        <div class="latest-article" v-if="filteredArticles.length">
+            <img :src="getThumbnailUrl(filteredArticles[0].thumbnail)" alt="Latest Article Image"
                 class="latest-article-image" />
             <div class="latest-article-content">
-                <span class="label">PROVIDENT</span>
-                <h2 class="article-title">{{ articles[0].title }}</h2>
-                <p class="article-date">{{ formatDate(articles[0].created_at) }}</p>
-                <p class="latest-article-description">{{ articles[0].excerpt }}</p>
+                <span class="label">{{ filteredArticles[0].category }}</span>
+                <h2 class="article-title">{{ filteredArticles[0].title }}</h2>
+                <p class="article-date">{{ formatDate(filteredArticles[0].created_at) }}</p>
+                <p class="latest-article-description">{{ filteredArticles[0].excerpt }}</p>
                 <div class="latest-article-footer">
                     <div class="author">
                         <img :src="getRandomAuthorImage()" alt="Author" class="author-image" />
-                        <span>{{ articles[0].author }}</span>
+                        <span>{{ filteredArticles[0].author }}</span>
                     </div>
                     <button class="read-more">Read More</button>
                 </div>
             </div>
         </div>
         <div class="articles">
-            <div class="article" v-for="(article) in articles.slice(1)" :key="article.id">
+            <div class="article" v-for="(article) in filteredArticles.slice(1)" :key="article.id">
                 <img :src="getThumbnailUrl(article.thumbnail)" alt="Article Image" class="article-image" />
                 <div class="article-content">
-                    <span class="label">QUOD</span>
+                    <span class="label">{{ article.category }}</span>
                     <h2 class="article-title">{{ article.title }}</h2>
                     <p class="article-date">{{ formatDate(article.created_at) }}</p>
                     <p class="article-description">{{ article.excerpt }}</p>
@@ -43,14 +46,39 @@
 </template>
 
 <script>
-import { getPosts } from '@/services/api'; // 假设你有一个 API 模块用于获取文章数据
+import { getPosts } from '@/services/api';
 
 export default {
     name: 'HomePage',
     data() {
         return {
-            articles: []
+            articles: [],
+            categories: ['All', 'food', 'lifestyle'],
+            selectedCategory: 'All',
+            searchQuery: '',
+            searchPerformed: false
         };
+    },
+    computed: {
+        filteredArticles() {
+            console.log('Filtering articles for category:', this.selectedCategory);
+            let filtered = this.articles;
+
+            if (this.selectedCategory !== 'All') {
+                filtered = filtered.filter(article => article.category === this.selectedCategory);
+            }
+
+            if (this.searchPerformed && this.searchQuery) {
+                const query = this.searchQuery.toLowerCase();
+                filtered = filtered.filter(article =>
+                    article.title.toLowerCase().includes(query) ||
+                    article.excerpt.toLowerCase().includes(query) ||
+                    article.body.toLowerCase().includes(query)
+                );
+            }
+
+            return filtered;
+        }
     },
     methods: {
         getRandomAuthorImage() {
@@ -66,10 +94,20 @@ export default {
         },
         fetchArticles() {
             getPosts().then(response => {
-                this.articles = response.data;
+                console.log('Fetched articles:', response.data);
+                // 排序文章，使最新的在最上面
+                this.articles = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             }).catch(error => {
                 console.error(error);
             });
+        },
+        updateSearchQuery(event) {
+            this.searchQuery = event.target.value;
+            this.searchPerformed = false; // 重置搜索标志
+        },
+        performSearch() {
+            this.searchPerformed = true;
+            console.log('Search performed with query:', this.searchQuery);
         }
     },
     created() {
@@ -97,6 +135,26 @@ export default {
     margin: 20px 0;
 }
 
+select {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    cursor: pointer;
+    /* height: auto; */
+}
+
+.search-input {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    cursor: pointer;
+    height: 42px;
+}
+
 .category-button,
 .find-button {
     background: #f0f0f0;
@@ -122,6 +180,7 @@ export default {
     width: 50%;
     height: auto;
     object-fit: cover;
+    border-radius: 10px;
 }
 
 .latest-article-content {
@@ -134,7 +193,8 @@ export default {
     background: #e0e0e0;
     padding: 5px 10px;
     border-radius: 5px;
-    font-size: 0.75rem;
+    font-size: 1rem;
+    font-weight: bold;
 }
 
 .article-title {
@@ -144,12 +204,13 @@ export default {
 
 .article-date,
 .article-description {
-    margin: 5 px 0;
+    margin: 5px 0;
 }
 
 .author {
     display: flex;
     align-items: center;
+    height: auto;
 }
 
 .author-image {
@@ -210,6 +271,6 @@ export default {
 }
 
 .latest-article-description {
-    margin: 100 px 10;
+    margin: 100px 10px;
 }
 </style>

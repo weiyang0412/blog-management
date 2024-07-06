@@ -67,7 +67,14 @@ export default {
                 thumbnail: null
             },
             originalTitle: '',
-            thumbnailUrl: ''
+            thumbnailUrl: '',
+            formData: {
+                title: '',
+                excerpt: '',
+                body: '',
+                category: '',
+                user_id: '',
+            }
         };
     },
     methods: {
@@ -85,7 +92,11 @@ export default {
             return filename ? require(`@/assets/thumbnails/${filename}`) : '';
         },
         onFileChange(event) {
-            this.form.thumbnail = event.target.files[0];
+            const file = event.target.files[0];
+            if (file) {
+                this.form.thumbnail = file;
+                this.thumbnailUrl = URL.createObjectURL(file); // Display thumbnail preview
+            }
         },
         savePost() {
             const user = JSON.parse(localStorage.getItem('loggedInUser'));
@@ -99,16 +110,29 @@ export default {
                 formData.append('thumbnail', this.form.thumbnail);
             }
             console.log('FormData content:', formData);
+            console.log('FormData content:', this.form.thumbnail.name);
 
-            
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ', ' + pair[1]);
+            }
+
             if (this.form.id) {
-                updatePost(this.form.id, formData).then(() => {
-                    this.$router.go(-1);
-                });
+                // console.log('checking', updatePost(this.form.id, formData));
+                updatePost(this.form.id, formData)
+                    .then(() => {
+                        this.$router.go(-1);
+                    })
+                    .catch(error => {
+                        console.error('Error updating post:', error);
+                    });
             } else {
-                createPost(formData).then(() => {
-                    this.$router.go(-1);
-                });
+                createPost(formData)
+                    .then(() => {
+                        this.$router.go(-1);
+                    })
+                    .catch(error => {
+                        console.error('Error creating post:', error);
+                    });
             }
         }
     },
@@ -262,6 +286,6 @@ select.form-control {
     max-width: 100%;
     height: auto;
     margin-top: 10px;
-    
+    border-radius: 4px;
 }
 </style>

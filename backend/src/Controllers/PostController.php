@@ -122,76 +122,86 @@ class PostController
     }
 
     public function updatePost(Request $request, Response $response, $args)
-{
-    try {
-        $id = $args['id'];
-        $conn = $this->db->connect();
+    {
+        try {
+            $id = $args['id'];
+            $conn = $this->db->connect();
+            
+            $parsedBody = $request->getParsedBody();
+            $uploadedFiles = $request->getUploadedFiles();
 
-        $sql = "SELECT * FROM posts WHERE id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':id', $id);
-        $stmt->execute();
-        $existingPost = $stmt->fetch(\PDO::FETCH_ASSOC);
+            error_log("Parsed body: " . print_r($parsedBody, true));
+            error_log("Uploaded files: " . print_r($uploadedFiles, true));
 
-        if (!$existingPost) {
-            $error = ["error" => "Post not found"];
+            if (empty($parsedBody)) {
+                throw new \Exception("Parsed body is empty");
+            }
+
+            if (!isset($parsedBody['title']) || !isset($parsedBody['excerpt']) || !isset($parsedBody['body']) || !isset($parsedBody['category']) || !isset($parsedBody['user_id'])) {
+                throw new \Exception("Title, excerpt, body, category, and user_id are required.");
+            }
+
+            $title = $parsedBody['title'];
+            $excerpt = $parsedBody['excerpt'];
+            $body = $parsedBody['body'];
+            $category = $parsedBody['category'];
+            $user_id = $parsedBody['user_id'];
+            $thumbnailFilename = $uploadedFiles['thumbnail'];
+
+            if (isset($uploadedFiles['thumbnail'])) {
+                $thumbnail = $uploadedFiles['thumbnail'];
+    
+                // 验证文件类型和大小
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!in_array($thumbnail->getClientMediaType(), $allowedTypes)) {
+                    throw new \Exception("Invalid file type. Only JPEG, PNG, and GIF are allowed.");
+                }
+    
+                $maxFileSize = 2 * 1024 * 1024; // 2MB
+                if ($thumbnail->getSize() > $maxFileSize) {
+                    throw new \Exception("File size exceeds the limit of 2MB.");
+                }
+    
+                $thumbnailDirectory = __DIR__ . '/../../../frontend/src/assets/thumbnails';
+                if (!is_dir($thumbnailDirectory)) {
+                    mkdir($thumbnailDirectory, 0755, true);
+                }
+    
+                $thumbnailFilename = sprintf('%s_%s', uniqid(), $thumbnail->getClientFilename());
+                $thumbnail->moveTo($thumbnailDirectory . DIRECTORY_SEPARATOR . $thumbnailFilename);
+            }
+    
+            $sql = "UPDATE posts SET title = :title, excerpt = :excerpt, body = :body, category = :category, user_id = :user_id, updated_at = NOW()";
+            if ($thumbnailFilename !== null) {
+                $sql .= ", thumbnail = :thumbnail";
+            }
+            $sql .= " WHERE id = :id";
+    
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':title', $title);
+            $stmt->bindValue(':excerpt', $excerpt);
+            $stmt->bindValue(':body', $body);
+            $stmt->bindValue(':category', $category);
+            $stmt->bindValue(':user_id', $user_id);
+            if ($thumbnailFilename !== null) {
+                $stmt->bindValue(':thumbnail', $thumbnailFilename);
+            }
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+    
+            $message = ["message" => "Post updated successfully"];
+            $payload = json_encode($message);
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        } catch (\Exception $e) {
+            error_log("Exception: " . $e->getMessage());
+            $error = ["error" => "Error updating post: " . $e->getMessage()];
             $payload = json_encode($error);
             $response->getBody()->write($payload);
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }
-
-        $parsedBody = $request->getParsedBody();
-        $uploadedFiles = $request->getUploadedFiles();
-
-        $title = $parsedBody['title'] ?? $existingPost['title'];
-        $excerpt = $parsedBody['excerpt'] ?? $existingPost['excerpt'];
-        $body = $parsedBody['body'] ?? $existingPost['body'];
-        $category = $parsedBody['category'] ?? $existingPost['category'];
-        $user_id = $parsedBody['user_id'] ?? $existingPost['user_id'];
-        $thumbnailFilename = $existingPost['thumbnail'];
-
-        if (isset($uploadedFiles['thumbnail']) && $uploadedFiles['thumbnail']->getError() === UPLOAD_ERR_OK) {
-            $thumbnail = $uploadedFiles['thumbnail'];
-            $thumbnailDirectory = __DIR__ . '/../../../frontend/src/assets/thumbnails';
-            if (!is_dir($thumbnailDirectory)) {
-                mkdir($thumbnailDirectory, 0777, true);
-            }
-            chmod($thumbnailDirectory, 0777);
-
-            $thumbnailFilename = sprintf('%s_%s', uniqid(), $thumbnail->getClientFilename());
-            $thumbnail->moveTo($thumbnailDirectory . DIRECTORY_SEPARATOR . $thumbnailFilename);
-        }
-
-        $sql = "UPDATE posts SET title = :title, excerpt = :excerpt, body = :body, category = :category, user_id = :user_id, updated_at = NOW() WHERE id = :id";
-        // if ($thumbnailFilename !== $existingPost['thumbnail']) {
-        //     $sql .= ", thumbnail = :thumbnail";
-        // }
-        // $sql .= " WHERE id = :id";
-
-        // 准备和绑定参数
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':title', $title);
-        $stmt->bindValue(':excerpt', $excerpt);
-        $stmt->bindValue(':body', $body);
-        $stmt->bindValue(':category', $category);
-        $stmt->bindValue(':user_id', $user_id);
-        if ($thumbnailFilename !== $existingPost['thumbnail']) {
-            $stmt->bindValue(':thumbnail', $thumbnailFilename);
-        }
-        $stmt->bindValue(':id', $id);
-        $stmt->execute();
-
-        $message = ["message" => "Post updated successfully"];
-        $payload = json_encode($message);
-        $response->getBody()->write($payload);
-        return $response->withHeader('Content-Type', 'application/json');
-    } catch (Exception $e) {
-        $error = ["error" => "Error updating post: " . $e->getMessage()];
-        $payload = json_encode($error);
-        $response->getBody()->write($payload);
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
-}
+
     public function deletePost(Request $request, Response $response, $args)
     {
         try {
