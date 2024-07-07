@@ -18,9 +18,9 @@
                 <div class="latest-article-footer">
                     <div class="author">
                         <img :src="getRandomAuthorImage()" alt="Author" class="author-image" />
-                        <span>{{ filteredArticles[0].author }}</span>
+                        <span>{{ filteredArticles[0].author_name  }}</span>
                     </div>
-                    <button class="read-more">Read More</button>
+                    <button class="read-more" @click="goToPost(filteredArticles[0].id)">Read More</button>
                 </div>
             </div>
         </div>
@@ -35,9 +35,9 @@
                     <div class="article-footer">
                         <div class="author">
                             <img :src="getRandomAuthorImage()" alt="Author" class="author-image" />
-                            <span>{{ article.author }}</span>
+                            <span>{{ article.author_name  }}</span>
                         </div>
-                        <button class="read-more">Read More</button>
+                        <button class="read-more" @click="goToPost(article.id)">Read More</button>
                     </div>
                 </div>
             </div>
@@ -139,7 +139,11 @@ export default {
             }
 
             return Math.floor(seconds) + (seconds === 1 ? " second" : " seconds") + " ago";
+        },
+        goToPost(id) {
+            this.$router.push({ name: 'ViewPost', params: { id } });
         }
+        
     },
     created() {
         this.fetchArticles();
@@ -177,7 +181,7 @@ select {
     border: 1px solid #ccc;
     background: #f0f0f0;
     cursor: pointer;
-    /* height: auto; */
+    height: 46px;
 }
 
 .search-input {
@@ -187,10 +191,10 @@ select {
     border: 1px solid #ccc;
     background: #f0f0f0;
     cursor: pointer;
-    height: 42px;
+    height: 46px;
 }
 
-.category-button,
+.category-button{}
 .find-button {
     background: #f0f0f0;
     border: none;

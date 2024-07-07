@@ -4,8 +4,12 @@
         <div class="container">
             <div class="links">
                 <a style="color: black">Links</a>
-                <router-link to="">All Users</router-link>
-                <router-link to="">New User</router-link>
+                <router-link :to="{ path: '/user' }"
+                    :class="{ 'active-link': $route.path === '/user', 'inactive-link': $route.path !== '/user' }">All
+                    Users</router-link>
+                <router-link :to="{ path: '/user/create' }"
+                    :class="{ 'active-link': $route.path === '/user/create', 'inactive-link': $route.path !== '/user/create' }">New
+                    User</router-link>
             </div>
             <div class="card-container">
                 <div class="card">
@@ -100,7 +104,7 @@ export default {
 .links a {
     padding-left: 200px;
     text-decoration: none;
-    color: blue;
+    /* color: blue; */
 }
 
 .users {
@@ -163,5 +167,13 @@ export default {
 
 .user-card:last-child {
     border-bottom: none;
+}
+
+.active-link {
+    color: blue;
+}
+
+.inactive-link {
+    color: black;
 }
 </style>

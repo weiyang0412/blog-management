@@ -5,7 +5,7 @@
             <div class="links">
                 <a style="color: black">Links</a>
                 <router-link :to="{ path: '/post' }" :class="{ 'active-link': $route.path === '/post', 'inactive-link': $route.path !== '/post' }">All Posts</router-link>
-                <router-link :to="{ path: '/create' }" :class="{ 'active-link': $route.path === '/create', 'inactive-link': $route.path !== '/create' }">New Post</router-link>
+                <router-link :to="{ path: '/post/create' }" :class="{ 'active-link': $route.path === '/post/create', 'inactive-link': $route.path !== '/post/create' }">New Post</router-link>
             </div>
             <div class="card-container">
                 <div class="card">

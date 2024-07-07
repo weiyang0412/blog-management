@@ -20,7 +20,8 @@ class PostController
     {
         try {
             $conn = $this->db->connect();
-            $sql = "SELECT * FROM posts";
+            $sql = "SELECT posts.*, users.name AS author_name FROM posts 
+                JOIN users ON posts.user_id = users.id";
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -40,7 +41,9 @@ class PostController
         try {
             $id = $args['id'];
             $conn = $this->db->connect();
-            $sql = "SELECT * FROM posts WHERE id = :id";
+            $sql = "SELECT posts.*, users.name AS author_name FROM posts 
+                JOIN users ON posts.user_id = users.id 
+                WHERE posts.id = :id";
             $stmt = $conn->prepare($sql);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
@@ -126,7 +129,7 @@ class PostController
         try {
             $id = $args['id'];
             $conn = $this->db->connect();
-            
+
             $parsedBody = $request->getParsedBody();
             $uploadedFiles = $request->getUploadedFiles();
 
@@ -150,33 +153,33 @@ class PostController
 
             if (isset($uploadedFiles['thumbnail'])) {
                 $thumbnail = $uploadedFiles['thumbnail'];
-    
+
                 // 验证文件类型和大小
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
                 if (!in_array($thumbnail->getClientMediaType(), $allowedTypes)) {
                     throw new \Exception("Invalid file type. Only JPEG, PNG, and GIF are allowed.");
                 }
-    
+
                 $maxFileSize = 2 * 1024 * 1024; // 2MB
                 if ($thumbnail->getSize() > $maxFileSize) {
                     throw new \Exception("File size exceeds the limit of 2MB.");
                 }
-    
+
                 $thumbnailDirectory = __DIR__ . '/../../../frontend/src/assets/thumbnails';
                 if (!is_dir($thumbnailDirectory)) {
                     mkdir($thumbnailDirectory, 0755, true);
                 }
-    
+
                 $thumbnailFilename = sprintf('%s_%s', uniqid(), $thumbnail->getClientFilename());
                 $thumbnail->moveTo($thumbnailDirectory . DIRECTORY_SEPARATOR . $thumbnailFilename);
             }
-    
+
             $sql = "UPDATE posts SET title = :title, excerpt = :excerpt, body = :body, category = :category, user_id = :user_id, updated_at = NOW()";
             if ($thumbnailFilename !== null) {
                 $sql .= ", thumbnail = :thumbnail";
             }
             $sql .= " WHERE id = :id";
-    
+
             $stmt = $conn->prepare($sql);
             $stmt->bindValue(':title', $title);
             $stmt->bindValue(':excerpt', $excerpt);
@@ -188,7 +191,7 @@ class PostController
             }
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-    
+
             $message = ["message" => "Post updated successfully"];
             $payload = json_encode($message);
             $response->getBody()->write($payload);

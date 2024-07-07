@@ -9,6 +9,9 @@ import UserListPage from '@/components/users/userList.vue'
 import PostListPage from '@/components/posts/postList.vue'
 import EditPostPage from '@/components/posts/editPost.vue'
 import CreatePostPage from '@/components/posts/createPost.vue'
+import ViewPostPage from '@/components/posts/viewPost.vue'
+import EditUserPage from '@/components/users/editUser.vue'
+import CreateUserPage from '@/components/users/addUser.vue'
 
 
 const routes = [
@@ -38,9 +41,21 @@ const routes = [
         component: RegisterPage,
     },
     {
-        path: '/user-list',
+        path: '/user',
         name: 'UserList',
         component: UserListPage,
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/user/:id',
+        name: 'EditUser',
+        component: EditUserPage,
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/user/create',
+        name: 'createUser',
+        component: CreateUserPage,
         meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
@@ -55,9 +70,14 @@ const routes = [
         component: EditPostPage,
     },
     {
-        path: '/create',
+        path: '/post/create',
         name: 'CreatePost',
         component: CreatePostPage,
+    },
+    {
+        path: '/view/:id',
+        name: 'ViewPost',
+        component: ViewPostPage,
     }
 
 

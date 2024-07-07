@@ -1,6 +1,6 @@
 <template>
     <div class="post-list-container">
-        <h1 class="title">{{ `Edit User: ${originalName}` }}</h1>
+        <h1 class="title">Add New User</h1>
         <div class="container">
             <div class="links">
                 <a style="color: black">Links</a>
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getUserById, createUser, updateUser } from '@/services/api';
+import { createUser, updateUser } from '@/services/api';
 
 export default {
     data() {
@@ -57,22 +57,10 @@ export default {
                 email: '',
                 password: '',
                 role: ''
-            },
-            originalName: '',
+            }
         };
     },
     methods: {
-        fetchUser() {
-            const userId = this.$route.params.id;
-            if (userId) {
-                getUserById(userId).then(response => {
-                    this.form = response.data;
-                    this.originalName = response.data.name;
-                }).catch(error => {
-                    console.error(error);
-                });
-            }
-        },
         async saveUser() {
             if (this.form.id) {
                 try {
@@ -101,9 +89,6 @@ export default {
                 role: ''
             };
         }
-    },
-    created() {
-        this.fetchUser();
     }
 };
 </script>
