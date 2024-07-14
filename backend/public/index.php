@@ -67,7 +67,8 @@ $app->delete('/posts/{id}', [$postController, 'deletePost']);
 
 // Contact routes
 $app->get('/contacts', [$contactController, 'getAllForms']);
-$app->get('/contacts/{id}', [$contactController, 'getFormById']);
+$app->get('/contact/user/{id}', [$contactController, 'getUserForms']);
+$app->get('/contact/{id}', [$contactController, 'getFormById']);
 $app->post('/submitForm', [$contactController, 'submitForm']);
 $app->put('/contacts/{id}', [$contactController, 'updateForm']);
 $app->delete('/contacts/{id}', [$contactController, 'deleteForm']);

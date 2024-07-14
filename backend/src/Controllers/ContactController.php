@@ -71,6 +71,31 @@ class ContactController {
             return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
         }
     }
+    
+    public function getUserForms(Request $request, Response $response, $args) {
+        try {
+            $userId = $args['id'];
+            $conn = $this->db->connect();
+            $sql = "SELECT id, name, subject FROM contacts WHERE user_id = :userId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':userId', $userId);
+            $stmt->execute();
+            $forms = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $payload = json_encode($forms);
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        } catch (PDOException $e) {
+            $error = ["error" => "Database error: " . $e->getMessage()];
+            $payload = json_encode($error);
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+        } catch (Exception $e) {
+            $error = ["error" => "Error fetching forms: " . $e->getMessage()];
+            $payload = json_encode($error);
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+        }
+    }  
 
     public function getFormById(Request $request, Response $response, $args) {
         try {
