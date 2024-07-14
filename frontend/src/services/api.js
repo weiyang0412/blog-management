@@ -22,6 +22,8 @@ export const loginUser = (user) => {
 export function createUser(user) {
     return axios.post(`${API_URL}/register`, user);
 }
+// export const loginUser = (user) => axios.post(`${API_URL}/login`, user);
+// export const createUser = (user) => axios.post(`${API_URL}/register`, user);
 
 // Course
 export const getCourses = () => api.get('/courses');
@@ -30,6 +32,7 @@ export const deleteCourse = (id) => api.delete(`/courses/${id}`);
 export function createCourse(course) {
     return axios.post(`${API_URL}/registerCourse`, course);
 }
+// export const createCourse = (course) => axios.post(`${API_URL}/registerCourse`, course);
 
 // Post
 export const getPosts = () => api.get('/posts');
@@ -69,3 +72,10 @@ export function createPost(formData) {
         });
 }
 
+// ContactUs
+export const getAllForms = () => api.get('/contact');
+export const getUserForms = (userId) => api.get(`/contact/user/${userId}`);
+export const getContactById = (id) => api.get(`/contact/${id}`);
+export const submitForm = (form) => api.post('/contact', form);
+export const updateContact = (id, form) => api.put(`/contact/${id}`, form);
+export const deleteForm = (id) => api.delete(`/contact/${id}`);

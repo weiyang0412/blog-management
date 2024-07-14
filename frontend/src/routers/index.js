@@ -2,7 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { isLoggedIn } from '@/services/auth'
 import HomePage from '@/components/menu/home.vue'
 import AboutPage from '@/components/menu/about.vue'
-import ContactUsPage from '@/components/menu/contact.vue'
+import ContactUsPage from '@/components/contacts/contact.vue'
+import EditContactPage from '@/components/contacts/EditContact.vue'
+import ViewFormPage from '@/components/contacts/ViewForm.vue'
+import ContactFormListPage from '@/components/contacts/contactFormList.vue'
 import LoginPage from '@/components/users/userLogin.vue'
 import RegisterPage from '@/components/users/userRegister.vue'
 import UserListPage from '@/components/users/userList.vue'
@@ -78,9 +81,27 @@ const routes = [
         path: '/view/:id',
         name: 'ViewPost',
         component: ViewPostPage,
-    }
-
-
+    },
+    {
+        path: "/contact",
+        name: "ContactUs",
+        component: ContactUsPage,
+    },
+    {
+        path: "/contact/view/:id",
+        name: "ViewForm",
+        component: ViewFormPage,
+    },
+    {
+        path: "/contact/edit/:id",
+        name: "EditContactUs",
+        component: EditContactPage,
+    },
+    {
+        path: "/contact/form/list",
+        name: "ContactFormList",
+        component: ContactFormListPage,
+    },
 ];
 
 const router = createRouter({

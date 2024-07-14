@@ -5,6 +5,8 @@
             <div class="menu-item"><a><router-link to="/">Home</router-link></a></div>
             <div v-if="isAdmin" class="menu-item"><a><router-link to="/user">User</router-link></a></div>
             <div v-if="isAdmin" class="menu-item"><a><router-link to="/post">Blog</router-link></a></div>
+            <div class="menu-item"><a><router-link to="/contact">ContactUs</router-link></a></div>
+            <div class="menu-item"><a><router-link to="/contactFormList">ContactUsList</router-link></a></div>
             <!-- <div class="menu-item"><a><router-link to="/about">About</router-link></a></div> -->
         </div>
         <div class="dropdown-container">

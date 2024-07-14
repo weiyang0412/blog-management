@@ -14,6 +14,7 @@ use Slim\Middleware\ErrorMiddleware;
 use App\Controllers\UserController;
 use App\Controllers\CourseController;
 use App\Controllers\PostController;
+use App\Controllers\ContactController;
 
 require __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/db.php';
@@ -44,6 +45,7 @@ $app->addErrorMiddleware(true, true, true);
 $userController = new UserController($db);
 $courseController = new CourseController($db);
 $postController = new PostController($db);
+$contactController = new ContactController($db);
 
 $app->get('/users', [$userController, 'getAllUsers']);
 $app->get('/users/{id}', [$userController, 'getUserById']);
@@ -62,5 +64,12 @@ $app->get('/posts/{id}', [$postController, 'getPostById']);
 $app->post('/createPost', [$postController, 'createPost']);
 $app->post('/posts/{id}', [$postController, 'updatePost']);
 $app->delete('/posts/{id}', [$postController, 'deletePost']);
+
+// Contact routes
+$app->get('/contacts', [$contactController, 'getAllForms']);
+$app->get('/contacts/{id}', [$contactController, 'getFormById']);
+$app->post('/submitForm', [$contactController, 'submitForm']);
+$app->put('/contacts/{id}', [$contactController, 'updateForm']);
+$app->delete('/contacts/{id}', [$contactController, 'deleteForm']);
 
 $app->run();
