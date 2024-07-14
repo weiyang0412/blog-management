@@ -154,7 +154,6 @@ class PostController
             if (isset($uploadedFiles['thumbnail'])) {
                 $thumbnail = $uploadedFiles['thumbnail'];
 
-                // 验证文件类型和大小
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
                 if (!in_array($thumbnail->getClientMediaType(), $allowedTypes)) {
                     throw new \Exception("Invalid file type. Only JPEG, PNG, and GIF are allowed.");
