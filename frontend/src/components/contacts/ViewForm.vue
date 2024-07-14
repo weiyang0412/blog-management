@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getFormById } from '@/services/api'; 
+import { getContactById } from '@/services/api'; 
 
 export default {
   data() {
@@ -65,7 +65,8 @@ export default {
     async fetchForm(id) {
       this.loading = true;
       try {
-        const response = await getFormById(id); 
+        const response = await getContactById(id); 
+        console.log(response)
         this.form = response.data;
       } catch (error) {
         console.error('Error fetching form:', error);

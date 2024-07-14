@@ -27,8 +27,9 @@
                                 <label>Category</label>
                                 <select v-model="form.category" name="category" id="category" class="form-control" required>
                                     <option value="">Select a category</option>
-                                    <option value="food">Food</option>
-                                    <option value="lifestyle">Lifestyle</option>
+                                    <option value="IT">IT</option>
+                                    <option value="Food">Food</option>
+                                    <option value="Lifestyle">Lifestyle</option>
                                 </select>
                             </div>
                             <div class="mb-3">

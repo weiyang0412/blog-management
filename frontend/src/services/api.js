@@ -73,9 +73,9 @@ export function createPost(formData) {
 }
 
 // ContactUs
-export const getAllForms = () => api.get('/contact');
+export const getAllForms = () => api.get('/contacts');
 export const getUserForms = (userId) => api.get(`/contact/user/${userId}`);
-export const getContactById = (id) => api.get(`/contact/${id}`);
+export const getContactById = (id) => api.get(`/contact/view/${id}`);
 export const submitForm = (form) => api.post('/contact', form);
 export const updateContact = (id, form) => api.put(`/contact/${id}`, form);
 export const deleteForm = (id) => api.delete(`/contact/${id}`);

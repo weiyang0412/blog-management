@@ -53,7 +53,7 @@ export default {
     data() {
         return {
             articles: [],
-            categories: ['All', 'food', 'lifestyle'],
+            categories: ['All', 'IT','Food', 'Lifestyle'],
             selectedCategory: 'All',
             searchQuery: '',
             searchPerformed: false
@@ -217,7 +217,7 @@ select {
 
 .latest-article-image {
     width: 50%;
-    height: auto;
+    height: 550px;
     object-fit: cover;
     border-radius: 10px;
 }

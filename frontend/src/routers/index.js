@@ -5,7 +5,7 @@ import AboutPage from '@/components/menu/about.vue'
 import ContactUsPage from '@/components/contacts/ContactUs.vue'
 import EditContactPage from '@/components/contacts/EditContact.vue'
 import ViewFormPage from '@/components/contacts/ViewForm.vue'
-import ContactFormListPage from '@/components/contacts/contactFormList.vue'
+import ContactFormListPage from '@/components/contacts/ContactFormList.vue'
 import LoginPage from '@/components/users/userLogin.vue'
 import RegisterPage from '@/components/users/userRegister.vue'
 import UserListPage from '@/components/users/userList.vue'
@@ -71,11 +71,13 @@ const routes = [
         path: '/post/:id',
         name: 'EditPost',
         component: EditPostPage,
+        meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
         path: '/post/create',
         name: 'CreatePost',
         component: CreatePostPage,
+        meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
         path: '/view/:id',
@@ -98,9 +100,10 @@ const routes = [
         component: EditContactPage,
     },
     {
-        path: "/contact/form/list",
+        path: "/contact/list",
         name: "ContactFormList",
         component: ContactFormListPage,
+        meta: { requiresAuth: true, requiresAdmin: true }
     },
 ];
 
@@ -122,7 +125,7 @@ router.beforeEach((to, from, next) => {
                 alert('Access denied. Admin only.');
                 next('/');
             }
-        }
+        } 
         else {
             next();
         }

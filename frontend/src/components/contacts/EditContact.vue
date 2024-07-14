@@ -97,7 +97,7 @@ export default {
                     console.log('Response:', response.data);
                     this.message = 'Form updated successfully!';
                     setTimeout(() => {
-                        this.$router.push('/contact/form/list');
+                        this.$router.push('/contact/list');
                     }, 2000);
                 } catch (error) {
                     console.error('Error:', error);

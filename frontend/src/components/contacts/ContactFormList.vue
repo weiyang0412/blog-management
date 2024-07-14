@@ -28,7 +28,7 @@
                     <td>{{ form.email }}</td>
                     <td>{{ form.subject }}</td>
                     <td>
-                      <router-link :to="'/contact/view/' + form.id" class="btn btn-sm btn-info me-1">View</router-link>
+                      <button @click="viewContact(form.id)" class="btn btn-sm btn-info me-1">View</button>
                       <button @click="deleteForm(form.id)" class="btn btn-sm btn-danger">Delete</button>
                     </td>
                   </tr>
@@ -88,7 +88,10 @@ export default {
           console.error('Error deleting form:', error);
         }
       }
-    }
+    },
+    viewContact(id) {
+        this.$router.push({ name: 'ViewForm', params: { id } });
+    },
   }
 };
 </script>
